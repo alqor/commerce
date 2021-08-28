@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="title">Add Your Item</h2>
+    <form action='/list-new-item' method="POST">
+    {% csrf_token %}
+    {% for field in list_item_form %}
+    <div class="form-control">
+    {{field.label_tag}}
+    {{field}}
+    </div>
+    {%endfor%}
+    <div class="form-control">
+    {{bid_form}}
+    </div>
+    </div>
+    <button type="submit">List Item</button>
+    </form>
+{% endblock %}

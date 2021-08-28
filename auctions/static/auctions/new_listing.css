@@ -1,0 +1,63 @@
+body {
+    padding: 10px;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+form {
+    margin: 3rem auto;
+    width: 90%;
+    max-width: 30rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.26);
+}
+
+button {
+    cursor: pointer;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    background-color: rgb(79, 6, 173);
+    color: white;
+    border: 1px solid rgb(79, 6, 173);
+}
+
+button:hover,
+button:active {
+    background-color: rgb(94, 36, 170);
+    border-color: rgb(94, 36, 170);
+}
+
+.title {
+    margin: 3rem auto;
+    width: 90%;
+    color: rgb(79, 6, 173);
+    text-align: center;
+}
+
+.form-control {
+    margin-bottom: 1rem;
+    color: rgb(79, 6, 173);
+}
+
+.form-control input, textarea {
+    font: inherit;
+    padding: 0.25rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: block;
+    width: 29rem;
+}
+
+.form-control input:focus, textarea:focus {
+    border-color: rgb(79, 6, 173);
+    outline: none;
+    background-color: rgb(194, 176, 218);
+}
+
+.form-control label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}

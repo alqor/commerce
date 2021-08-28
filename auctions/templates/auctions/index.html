@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="main">
+    {% for item in items %}
+    <a href="{% url 'item-card' pk=item.item %}">
+    
+    <div class="active-item">
+        <div class="active-image">
+        {% if item.item__img_url %}
+        <img src="{{item.item__img_url}}" alt="{{item.item__title}}" width=auto height="300">
+        {% else %} No Image
+        {% endif %}
+        </div>
+
+        <div class="active-description">
+        <h2>{{item.item__title}}</h2>
+        <h3>Price: {{item.bid_value__max}} $</h3>
+        <span>Created: {{item.item__list_date}}</span>
+        </div>
+    </div>
+    </a>
+    {% endfor %}
+</div>    
+{% endblock %}

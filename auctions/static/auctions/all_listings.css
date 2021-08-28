@@ -1,0 +1,56 @@
+img {
+    width: 50%;
+    height: auto;
+}
+
+a {
+text-decoration: none;
+color:rgb(79, 6, 173)
+}
+
+.main {
+    padding: 0rem 2rem;
+}
+
+
+.active-item {
+    /* display: inline-block; */
+    padding: 1rem 1rem;
+    border-radius: 6px;
+    border: 1px solid rgb(79, 6, 173);
+    margin: 3rem 3rem;
+    height: 15rem;
+    max-width: 60rem;
+    min-width: 12rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.26);
+}
+
+.active-item:active,
+.active-item:hover {
+    background-color: rgb(194, 176, 218);
+    transform: scale(1.1);
+}
+
+.active-image, .active-description {
+    padding: 0.5rem 0.5rem;
+    display: inline-block;
+    width: 40%;
+    height:auto;
+    min-width: 200px;
+
+    text-align: left;
+    vertical-align: top;
+    margin: 0.5rem 0.2rem;
+
+}
+
+.active-description {
+    text-align: left;
+    vertical-align: top;
+    margin: 0.5rem 0.2rem;
+}
+
+h2, h3 {
+    text-align: inherit;
+    margin: inherit;
+}

@@ -1,0 +1,12 @@
+ {% if user.is_authenticated %}
+         Make your bid:
+         <p color="red">Your bid should be higher than current</p>
+           <form action='#' method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit">Submit</button>
+           </form>      
+{% else %}
+         To make a bid, please <a href="{% url "login"%}"> Log in </a> 
+         or <a href="{% url "register"%}"> Register </a> 
+{% endif %}
