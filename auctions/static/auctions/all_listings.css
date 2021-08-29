@@ -3,21 +3,39 @@ img {
     height: auto;
 }
 
-a {
+a,
+a:active,
+a:hover {
 text-decoration: none;
-color:rgb(79, 6, 173)
+color:#51cacc
+}
+
+body {
+    padding:0;
+    margin: 0;
 }
 
 .main {
     padding: 0rem 2rem;
 }
 
+.header{
+    background-color: #692e6d;
+    color:#51cacc;
+    text-align: left;
+}
+
+.nav 
+{
+    color: white;
+}
 
 .active-item {
     /* display: inline-block; */
+    background-color: #f0e8f1;
     padding: 1rem 1rem;
     border-radius: 6px;
-    border: 1px solid rgb(79, 6, 173);
+    border: 1px solid #692e6d;
     margin: 3rem 3rem;
     height: 15rem;
     max-width: 60rem;
@@ -27,8 +45,10 @@ color:rgb(79, 6, 173)
 
 .active-item:active,
 .active-item:hover {
-    background-color: rgb(194, 176, 218);
+    background-color: #692e6d;
+    margin: 3rem 3rem;
     transform: scale(1.1);
+    text-decoration: none;
 }
 
 .active-image, .active-description {

@@ -4,12 +4,13 @@
 <html lang="en">
     <head>
         <title>{% block title %}Auctions{% endblock %}</title>
-        {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> {% endcomment %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static "auctions/styles.css" %}">
         <link rel="stylesheet" href="{% static "auctions/all_listings.css" %}">
         <link rel="stylesheet" href="{% static "auctions/new_listing.css" %}">
     </head>
     <body>
+    <div class="header">
         <h1>Auctions</h1>
         <div>
             {% if user.is_authenticated %}
@@ -44,6 +45,7 @@
                 </li>
             {% endif %}
         </ul>
+        </div>
         <hr>
         {% block body %}
         {% endblock %}

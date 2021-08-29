@@ -19,5 +19,7 @@ urlpatterns = [
 
     path('watchlist', views.Watchlist.as_view(), name='watchlist'),
 
+    path('watchlist/<int:item_id>', views.add_to_watchlist, name='add-watch')
+
     # path('add-bid', login_required(views.AddBid.as_view()), name='add-bid'),
 ]

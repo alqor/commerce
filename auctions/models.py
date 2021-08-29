@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.deletion import CASCADE
 from django.urls import reverse
 from django.core.validators import MinValueValidator
+from django.db.models import Max
 
 
 class User(AbstractUser):
@@ -41,6 +42,11 @@ class Listing(models.Model):
         """
         return reverse('item-card', args=[self.id])
     
+    def max_bid(self):
+        bids = Listing.objects.all().get(pk=self.id).bids.all()
+        max_bid = bids.aggregate(Max('bid_value'))
+        return max_bid['bid_value__max']
+    
 
 class Bid(models.Model):
     bid_value =  models.IntegerField(validators=[MinValueValidator(1)])
@@ -48,6 +54,9 @@ class Bid(models.Model):
                                  related_name='bids')
     bid_date = models.DateField(auto_now_add=True)
     item = models.ForeignKey(Listing, on_delete=models.CASCADE, null=True, related_name='bids')
+
+    def __str__(self):
+        return f'{self.bid_value} on {self.item} from {self.bid_by}'
 
 
 class Comment(models.Model):
@@ -57,7 +66,10 @@ class Comment(models.Model):
     publish_date = models.DateField(auto_now_add=True)
 
 
-class WatchlistItem(models.Model):
+class Watchlist(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, 
                             null=True, related_name='watchlist_items')
     item = models.ManyToManyField(Listing)
+
+    def __str__(self):
+        return f'{self.author}'
