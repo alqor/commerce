@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from . import views
 
 urlpatterns = [
@@ -23,3 +24,5 @@ urlpatterns = [
 
     # path('add-bid', login_required(views.AddBid.as_view()), name='add-bid'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

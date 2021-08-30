@@ -1,7 +1,54 @@
-.nav{
+body {
+    margin: 0px 0px;
+}
+
+img.bg {
+    /* Set rules to fill background */
+    min-height: 100%;
+    min-width: 1024px;
+      
+    /* Set up proportionate scaling */
+    width: 100%;
+    height: auto;
+      
+    /* Set up positioning */
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index:-1;
+  }
+
+.upper-head {
+    text-align: left;
+    background-color: #81483E;
+    min-width: 100%;
+    font-family: 'Rampart One', cursive;
+    color: #E8D1CB;
 
 }
 
-.nav-item {
-    display: inline;
+.upper-nav {
+    background-color: #81483E;
+    min-width: 100%;
+    color: #515B48;
+    padding-bottom: 1rem;
 }
+
+.upper-nav  a{
+    color: #90a082;
+    font-weight: bold;
+    
+}
+.upper-nav a:active,
+.upper-nav a:hover 
+{
+    color: #515B48;
+    background-color: #E8D1CB;
+    
+}
+
+.upper-nav span{
+    color: #E8D1CB;
+}
+

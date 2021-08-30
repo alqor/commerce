@@ -3,14 +3,65 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
         <title>{% block title %}Auctions{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
+
         <link rel="stylesheet" href="{% static "auctions/styles.css" %}">
         <link rel="stylesheet" href="{% static "auctions/all_listings.css" %}">
-        <link rel="stylesheet" href="{% static "auctions/new_listing.css" %}">
+        <link rel="stylesheet" href="{% static "auctions/new_listing.css" %}"> 
     </head>
     <body>
-    <div class="header">
+    <img class="bg" src="{% static "auctions/media/hp_bg.jpg" %}" alt="bg" />
+
+<div class="container upper-head">
+    <div class="row">
+        <div class="col">
+            <h1>Fairy Auctions</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container upper-nav">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between mb-4 border-bottom">
+      <ul class="nav col-12 col-md-auto mb-4 justify-content-center mb-md-2">
+        <li><a href="{% url 'index' %}" class="nav-link px-4 link-secondary">Active Listings</a></li>
+        <li><a href="{% url 'categories' %}" class="nav-link px-4 link-dark">Categories</a></li>
+        <li><a href="{% url 'watchlist' %}" class="nav-link px-4 link-dark">Watchlist</a></li>
+
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'list-new-item' %}" class="nav-link px-4 link-dark">List New Item</a></li>
+        {% endif %}
+      </ul>
+
+      <ul class="nav justify-content-end">
+      
+      {% if user.is_authenticated %}
+        <li class="nav-item">
+            <span class="nav-link">Signed in as <strong>{{ user.username }}</strong></span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+      {% else %}
+         <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+         <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+        </li>
+        {% endif %} 
+      </ul>
+    </header>
+  </div>
+    {% comment %} <div class="header">
         <h1>Auctions</h1>
         <div>
             {% if user.is_authenticated %}
@@ -45,8 +96,8 @@
                 </li>
             {% endif %}
         </ul>
-        </div>
-        <hr>
+        </div> {% endcomment %}
+    
         {% block body %}
         {% endblock %}
     </body>
