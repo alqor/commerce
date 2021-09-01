@@ -67,41 +67,6 @@ def watchlist_items(request):
     else:
         return render(request, "auctions/index.html", {'items':active_items})
 
-# class ItemCard(FormMixin, DetailView):
-#     template_name = 'auctions/item.html'
-#     model = Listing
-
-#     context_object_name = 'item'
-#     form_class = BidForm
-
-#     def get_success_url(self):
-#         print(self.request.GET)
-#         return reverse('item-card', kwargs={'pk': self.object.id})
-        
-
-#     def get_context_data(self, **kwargs):
-#         context = super(ItemCard, self).get_context_data(**kwargs)  
-#         context['form'] = BidForm(initial={'item': self.object})
-#         context['max_bid'] = get_newest_price(self.object.pk)
-#         return context
-
-#     def post(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         form = self.get_form()
-#         if form.is_valid():
-#             if form.cleaned_data['bid_value'] <= get_newest_price(self.object.id):
-#                 return self.form_invalid(form)
-#                 # here should do womething to error that bid is lower than current
-#             saved_form = form.save(commit=False)
-#             saved_form.bid_by = User.objects.get(username=request.user)
-#             saved_form.item = Listing.objects.get(pk=self.object.id)
-#             saved_form.save()
-#             print('saved')
-#             return HttpResponseRedirect('/thank-you')
-#         else:
-#             return self.form_invalid(form)
-
-
 
 def login_view(request):
     if request.method == "POST":
@@ -170,12 +135,12 @@ def list_new_item(request):
         bid_form = BidForm(request.POST)
         if list_item_form.is_valid() and bid_form.is_valid():
             id = save_listing(list_item_form, request)
-
             bid_form.save(commit=False)
             bid_form.bid_by = User.objects.get(username=request.user)
             bid_form.item = id
             return HttpResponseRedirect('/thank-you')
         else:
+            raise ValidationError('bid val')
             print('something goes wrong')
     else:
         list_item_form = ListingForm()
@@ -188,27 +153,3 @@ def list_new_item(request):
 @login_required
 def thank_you(request):
     return render(request, 'auctions/thank_you.html')
-
-
-# @login_required
-# def add_to_watchlist(request, item_id):
-#     user_watchlist = WatchlistItem.objects.filter(author=User.objects.get(username=request.user)).all()[0]
-#     item = Listing.objects.get(pk=item_id)
-#     wl_items = user_watchlist.item.all()
-
-#     if item in wl_items:
-#         add_item = 0
-#         user_watchlist.item.remove(Listing.objects.get(pk=item_id))
-#         user_watchlist.save()
-
-#     if not user_watchlist:
-#         user_watchlist = WatchlistItem(author=User.objects.get(username=request.user))
-#         user_watchlist.save()
-#     if item not in wl_items:
-#         add_item = 1
-#         user_watchlist.item.add(Listing.objects.get(pk=item_id))
-#         user_watchlist.save()
-
-    
-#     return reverse('item-card', kwargs={'add_item': add_item})
-
