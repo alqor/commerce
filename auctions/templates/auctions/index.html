@@ -2,18 +2,18 @@
 
 {% block body %}
 <div class="container item-main">
-    {% for item in items %}
-    
+   {% if items %}
+   {% for item in items %}
    {% if forloop.first %}<div class="row">{% endif %}
 
         <div class="card col-5 active-item">
-        <a href="{% url 'item-card' pk=item.id %}"> 
+        <a href="{% url 'item-page' id=item.id %}"> 
         <div class="row g-0">
-            <div class="col-md-4">
+            <div class="col-md-4 active-img">
             {% if item.img_url %}
              <img src="{{item.img_url}}" class="card-img" alt="{{item.title}}">
              {% else %} 
-             <img src="..." class="img-fluid rounded-start" alt="image_placeholder">
+             <span>Sorry, author didn't provide the image</span>
             {% endif %}
             </div>
 
@@ -30,10 +30,19 @@
          </a>
         </div> 
 
+  
+
     {% if forloop.counter|divisibleby:2 %}</div><div class="row">{% endif %}
     {% if forloop.last %}</div>{% endif %}
-
     {% endfor %}
+    {% else %}
+    <div class="row">
+    <div class="col no-items">
+    <span>Sorry, there are no items yet.</span>
+    </div>
+    </div>
+
+    {% endif %}
 </div>
    
 {% endblock %}

@@ -1,6 +1,14 @@
 body {
     margin: 0px 0px;
+    background-color: rgba(255,255,255,0.6);
 }
+
+a,
+a:active,
+a:hover {
+text-decoration: none;
+}
+
 
 img.bg {
     /* Set rules to fill background */
@@ -17,11 +25,14 @@ img.bg {
     left: 0;
 
     z-index:-1;
+
   }
+
+
 
 .upper-head {
     text-align: left;
-    background-color: #81483E;
+    background-color: rgba(129, 72, 62, 0.9);
     min-width: 100%;
     font-family: 'Rampart One', cursive;
     color: #E8D1CB;
@@ -29,7 +40,7 @@ img.bg {
 }
 
 .upper-nav {
-    background-color: #81483E;
+    background-color: rgba(129, 72, 62, 0.9);
     min-width: 100%;
     color: #515B48;
     padding-bottom: 1rem;
@@ -52,3 +63,12 @@ img.bg {
     color: #E8D1CB;
 }
 
+.footer {
+    position: absolute;
+    width: 100%;
+    bottom: 1rem;
+    text-align: center;
+    background-color: rgba(232, 209, 203, 0.8);
+    color: rgba(129, 72, 62, 1);
+    font-size: 0.75rem;
+}

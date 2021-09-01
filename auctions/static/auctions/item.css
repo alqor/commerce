@@ -1,0 +1,52 @@
+.item-card {
+    margin-top: 1.5rem;
+    background-color:rgb(241, 231, 224,0.7);
+    border-radius: 6px;
+}
+
+.item-title {
+    color: rgba(129, 72, 62, 1);
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.item-cat, .item-watchlist {
+    margin-bottom: 1rem;
+}
+
+.item-cat span, .item-watchlist span{
+    color: #E8D1CB;
+    width: auto;
+    padding: 0.2rem;
+    border-radius: 6px;
+}
+
+.item-cat span{
+    background-color: rgba(81, 91, 72, 0.9);
+}
+
+.item-watchlist span{
+    background-color: rgba(163, 116, 82, 1)
+}
+
+.item-cat span:active,
+.item-cat span:hover,
+.item-watchlist span:active,
+.item-watchlist span:hover {
+    background-color: rgba(129, 72, 62, 0.9);
+    color: #E8D1CB;
+}
+
+
+
+.item-bid span {
+    background-color: rgba(129, 72, 62, 1);
+    color: #E8D1CB;
+    width: auto;
+    padding: 0.2rem;
+    border-radius: 6px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+

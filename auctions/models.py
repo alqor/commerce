@@ -20,7 +20,7 @@ class ItemCategory(models.Model):
         """
         to use in html templates
         """
-        return reverse('item-card', args=[self.id])
+        return reverse('list-by-cat', args=[self.id])
 
 class Listing(models.Model):
     title = models.CharField(max_length=50)
@@ -46,6 +46,9 @@ class Listing(models.Model):
         bids = Listing.objects.all().get(pk=self.id).bids.all()
         max_bid = bids.aggregate(Max('bid_value'))
         return max_bid['bid_value__max']
+    
+    def is_watchlisted(self):
+        pass
     
 
 class Bid(models.Model):

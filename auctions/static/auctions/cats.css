@@ -1,0 +1,25 @@
+.cats-row {
+    margin-top: 2rem;
+}
+
+.cat {
+    background-color: rgba(81, 91, 72, 0.9);
+    text-align: center;
+    border-radius: 6px;
+    vertical-align: middle;
+    margin: 1rem;
+    padding: 0rem;
+}
+
+.cat span {
+    display: block;
+    color: rgba(232, 209, 203, 1);
+    text-align: center;
+    padding: 1rem;
+}
+
+.cat:active,
+.cat:hover {
+    background-color: rgba(129, 72, 62, 0.9);
+    transform: scale(1.05); 
+}

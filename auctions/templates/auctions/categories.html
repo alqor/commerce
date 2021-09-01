@@ -1,9 +1,19 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<ul>
+<div class="container">
+<div class="row">
     {% for cat in cats%}
-        <li><a href="{% url 'list-by-cat' cat_id=cat.pk %}">{{cat.cat_name}}</a></li>
-    {% endfor%}
-</ul>
+
+        <div class="col-2 cat">
+        <a href="{% url 'list-by-cat' cat_id=cat.pk %}">
+        <span>
+        {{cat.cat_name}}
+        </span>
+        </a>
+        </div>
+
+    {% endfor%} 
+    </div>
+</div>
 {% endblock %}

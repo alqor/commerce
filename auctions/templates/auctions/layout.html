@@ -16,10 +16,13 @@
 
         <link rel="stylesheet" href="{% static "auctions/styles.css" %}">
         <link rel="stylesheet" href="{% static "auctions/all_listings.css" %}">
+        <link rel="stylesheet" href="{% static "auctions/cats.css" %}">
+        <link rel="stylesheet" href="{% static "auctions/item.css" %}">
+
         <link rel="stylesheet" href="{% static "auctions/new_listing.css" %}"> 
     </head>
     <body>
-    <img class="bg" src="{% static "auctions/media/hp_bg.jpg" %}" alt="bg" />
+    <img class="bg" src="{% static "auctions/media/hp_bg_op_05.jpg" %}" alt="bg" />
 
 <div class="container upper-head">
     <div class="row">
@@ -34,9 +37,9 @@
       <ul class="nav col-12 col-md-auto mb-4 justify-content-center mb-md-2">
         <li><a href="{% url 'index' %}" class="nav-link px-4 link-secondary">Active Listings</a></li>
         <li><a href="{% url 'categories' %}" class="nav-link px-4 link-dark">Categories</a></li>
-        <li><a href="{% url 'watchlist' %}" class="nav-link px-4 link-dark">Watchlist</a></li>
-
+        
         {% if user.is_authenticated %}
+        <li><a href="{% url 'watchlist' %}" class="nav-link px-4 link-dark">Watchlist</a></li>
         <li><a href="{% url 'list-new-item' %}" class="nav-link px-4 link-dark">List New Item</a></li>
         {% endif %}
       </ul>
@@ -61,44 +64,15 @@
       </ul>
     </header>
   </div>
-    {% comment %} <div class="header">
-        <h1>Auctions</h1>
-        <div>
-            {% if user.is_authenticated %}
-                Signed in as <strong>{{ user.username }}</strong>.
-            {% else %}
-                Not signed in.
-            {% endif %}
-        </div>
-        <ul class="nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'categories' %}">Categories</a>
-            </li>
-            {% if user.is_authenticated %}
-                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'list-new-item' %}">List New Item</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
-                </li>
-            {% endif %}
-        </ul>
-        </div> {% endcomment %}
-    
+   
         {% block body %}
         {% endblock %}
+    
+    {% comment %} <footer>
+      <div class="footer">
+        by alqor, 2021
+      </div>
+    </footer> {% endcomment %}
+
     </body>
 </html>

@@ -17,67 +17,91 @@ from .forms import *
 
 def index(request):
     active_items = Listing.objects.filter(status='Active') 
-    for item in active_items:
-        print(item.max_bid())
     return render(request, "auctions/index.html", {'items':active_items})
 
-
-class ItemCard(FormMixin, DetailView):
-    template_name = 'auctions/item.html'
-    model = Listing
-
-    context_object_name = 'item'
-    form_class = BidForm
-
-    def get_success_url(self):
-        print(self.request.GET)
-        return reverse('item-card', kwargs={'pk': self.object.id})
-        
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemCard, self).get_context_data(**kwargs)  
-        context['form'] = BidForm(initial={'item': self.object})
-        context['max_bid'] = get_newest_price(self.object.pk)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.get_form()
-        if form.is_valid():
-            if form.cleaned_data['bid_value'] <= get_newest_price(self.object.id):
-                return self.form_invalid(form)
-                # here should do womething to error that bid is lower than current
-            saved_form = form.save(commit=False)
-            saved_form.bid_by = User.objects.get(username=request.user)
-            saved_form.item = Listing.objects.get(pk=self.object.id)
-            saved_form.save()
-            print('saved')
-            return HttpResponseRedirect('/thank-you')
-        else:
-            return self.form_invalid(form)
-
-    
 class Categories(ListView):
     template_name = 'auctions/categories.html'
     model = ItemCategory
     context_object_name = 'cats'
 
-class CategoriesList(ListView):
-    template_name = 'auctions/index.html'
+def items_by_cat(request, cat_id):
+    active_items = Listing.objects.filter(status='Active', category=cat_id) 
+    return render(request, "auctions/index.html", {'items':active_items})
 
-    context_object_name = 'items'
-    def get_queryset(self, *args, **kwargs):
-        cat_id = self.kwargs.get('cat_id')
-        active_items = Bid.objects.filter(item__status='Active', item__category=cat_id) 
-        max_bids_items = active_items.values('item',
-                                          'item__id',
-                                          'item__title',
-                                          'item__list_date',
-                                          'item__img_url').annotate(Max('bid_value'))
-        return max_bids_items
+def item_page(request, id):
+    item = Listing.objects.get(pk=id)
+    is_wl=None
+    if request.user.is_authenticated:
+        is_wl = is_watchlisted(request.user, id)
+    return render(request, "auctions/item.html", {"item": item, "wl":is_wl})
 
-class Watchlist(ListView):
-    pass
+def is_watchlisted(user, id):
+    watchlist = Watchlist.objects.filter(author=user)
+    if watchlist and watchlist.first().item.filter(pk=id):
+        return True 
+
+@login_required
+def watchlist_manipulator(request, item_id):
+    user = request.user
+    # list_item = Listing.objects.get(pk=item_id)
+    if is_watchlisted(user, item_id):
+        watchlist = Watchlist.objects.get(author=user)
+        watchlist.item.remove(item_id)
+        # return HttpResponseRedirect(f'/{item_id}')
+    else:
+        if Watchlist.objects.filter(author=user):
+           watchlist = Watchlist.objects.get(author=user)
+           watchlist.item.add(item_id)
+        else:
+           watchlist = Watchlist(author=user)
+           watchlist.save()
+           watchlist.item.add(item_id)
+    return HttpResponseRedirect(f'/{item_id}')
+
+@login_required
+def watchlist_items(request):
+    wl_items = Watchlist.objects.filter(author=request.user)
+    if wl_items:
+        active_items = wl_items[0].item.all()
+        return render(request, "auctions/index.html", {'items':active_items})
+    else:
+        return render(request, "auctions/index.html", {'items':active_items})
+
+# class ItemCard(FormMixin, DetailView):
+#     template_name = 'auctions/item.html'
+#     model = Listing
+
+#     context_object_name = 'item'
+#     form_class = BidForm
+
+#     def get_success_url(self):
+#         print(self.request.GET)
+#         return reverse('item-card', kwargs={'pk': self.object.id})
+        
+
+#     def get_context_data(self, **kwargs):
+#         context = super(ItemCard, self).get_context_data(**kwargs)  
+#         context['form'] = BidForm(initial={'item': self.object})
+#         context['max_bid'] = get_newest_price(self.object.pk)
+#         return context
+
+#     def post(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         form = self.get_form()
+#         if form.is_valid():
+#             if form.cleaned_data['bid_value'] <= get_newest_price(self.object.id):
+#                 return self.form_invalid(form)
+#                 # here should do womething to error that bid is lower than current
+#             saved_form = form.save(commit=False)
+#             saved_form.bid_by = User.objects.get(username=request.user)
+#             saved_form.item = Listing.objects.get(pk=self.object.id)
+#             saved_form.save()
+#             print('saved')
+#             return HttpResponseRedirect('/thank-you')
+#         else:
+#             return self.form_invalid(form)
+
+
 
 def login_view(request):
     if request.method == "POST":
@@ -166,25 +190,25 @@ def thank_you(request):
     return render(request, 'auctions/thank_you.html')
 
 
-@login_required
-def add_to_watchlist(request, item_id):
-    user_watchlist = WatchlistItem.objects.filter(author=User.objects.get(username=request.user)).all()[0]
-    item = Listing.objects.get(pk=item_id)
-    wl_items = user_watchlist.item.all()
+# @login_required
+# def add_to_watchlist(request, item_id):
+#     user_watchlist = WatchlistItem.objects.filter(author=User.objects.get(username=request.user)).all()[0]
+#     item = Listing.objects.get(pk=item_id)
+#     wl_items = user_watchlist.item.all()
 
-    if item in wl_items:
-        add_item = 0
-        user_watchlist.item.remove(Listing.objects.get(pk=item_id))
-        user_watchlist.save()
+#     if item in wl_items:
+#         add_item = 0
+#         user_watchlist.item.remove(Listing.objects.get(pk=item_id))
+#         user_watchlist.save()
 
-    if not user_watchlist:
-        user_watchlist = WatchlistItem(author=User.objects.get(username=request.user))
-        user_watchlist.save()
-    if item not in wl_items:
-        add_item = 1
-        user_watchlist.item.add(Listing.objects.get(pk=item_id))
-        user_watchlist.save()
+#     if not user_watchlist:
+#         user_watchlist = WatchlistItem(author=User.objects.get(username=request.user))
+#         user_watchlist.save()
+#     if item not in wl_items:
+#         add_item = 1
+#         user_watchlist.item.add(Listing.objects.get(pk=item_id))
+#         user_watchlist.save()
 
     
-    return reverse('item-card', kwargs={'add_item': add_item})
+#     return reverse('item-card', kwargs={'add_item': add_item})
 

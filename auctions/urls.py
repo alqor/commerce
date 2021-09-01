@@ -13,14 +13,14 @@ urlpatterns = [
 
     path('list-new-item', views.list_new_item, name="list-new-item"),
     path('thank-you', views.thank_you, name='thank-you'),
-    path('<int:pk>', views.ItemCard.as_view(), name='item-card'),
+    path('<int:id>', views.item_page, name='item-page'),
 
     path('categories', views.Categories.as_view(), name='categories'),
-    path('categories/<int:cat_id>', views.CategoriesList.as_view(), name='list-by-cat'),
+    path('categories/<int:cat_id>', views.items_by_cat, name='list-by-cat'),
 
-    path('watchlist', views.Watchlist.as_view(), name='watchlist'),
+    path('watchlist', views.watchlist_items, name='watchlist'),
 
-    path('watchlist/<int:item_id>', views.add_to_watchlist, name='add-watch')
+    path('watchlist/<int:item_id>', views.watchlist_manipulator, name='add-remove-watch')
 
     # path('add-bid', login_required(views.AddBid.as_view()), name='add-bid'),
 ]
