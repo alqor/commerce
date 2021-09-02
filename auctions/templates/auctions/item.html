@@ -34,11 +34,19 @@
                 <div>{{item.description}}</div>
                 <div><small class="text-muted">Created by: {{item.listed_by}} on {{item.list_date}}</small></div>
                 <hr>
-                <div class="item-bid">Current bid: <span>{{item.max_bid}} $</span></div>
+                <div class="item-bid">Current bid: <span>{{item.max_bid_value}} $</span></div>
+                <div><small class="text-muted">{{item.bids_quantity}} bid(s) so far. 
+                {% if max_by_user %}
+                Your bid is current bid.
+                {% endif %}
+                </small></div>
+                {% if item.start_is_max %}
+                Current bid is a start bid
+                {% endif %}
                 <hr>
 
                 {% include "auctions/includes/add_bid.html" with bid_form=form item_id=item.pk%}
-                
+
         </div>
   </div>
   </div>      

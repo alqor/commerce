@@ -42,14 +42,26 @@ class Listing(models.Model):
         """
         return reverse('item-page', args=[self.id])
     
-    def max_bid(self):
-        bids = Listing.objects.all().get(pk=self.id).bids.all()
+    def max_bid_value(self):
+        bids = Listing.objects.get(pk=self.id).bids.all()
         max_bid = bids.aggregate(Max('bid_value'))
         return max_bid['bid_value__max']
     
-    def is_watchlisted(self):
-        pass
+    def start_bid_value(self):
+        bids = Listing.objects.get(pk=self.id).bids.all()
+        start_bid = bids.get(is_start=True)
+        return start_bid.bid_value
     
+    def start_is_max(self):
+        bids = Listing.objects.get(pk=self.id).bids.all()
+        max_not_start = bids.filter(is_start=False).order_by('-bid_value').first()
+        start_bid = bids.get(is_start=True)
+        return (max_not_start == start_bid) or not max_not_start
+    
+    def bids_quantity(self):
+        bids = Listing.objects.get(pk=self.id).bids.all()
+        bids = bids.filter(is_start=False)
+        return len(bids)
 
 class Bid(models.Model):
     bid_value =  models.IntegerField(validators=[MinValueValidator(1)])
@@ -57,9 +69,11 @@ class Bid(models.Model):
                                  related_name='bids')
     bid_date = models.DateField(auto_now_add=True)
     item = models.ForeignKey(Listing, on_delete=models.CASCADE, null=True, related_name='bids')
+    is_start = models.BooleanField(null=True, default=False)
 
     def __str__(self):
         return f'{self.bid_value} on {self.item} from {self.bid_by}'
+
 
 
 class Comment(models.Model):

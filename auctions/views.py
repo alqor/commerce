@@ -37,8 +37,15 @@ def item_page(request, id):
     bid_form = BidFormSmall()
     if request.user.is_authenticated:
         is_wl = is_watchlisted(request.user, id)
-    return render(request, "auctions/item.html", {"item": item, "wl":is_wl, 'form': bid_form})
+    max_by_user = max_is_by_user(item, request.user)
+    print(max_by_user)
+    return render(request, "auctions/item.html", {"item": item, "wl":is_wl, 'max_by_user': max_by_user, 'form': bid_form})
 
+def max_is_by_user(item, user):
+    bids = Listing.objects.all().get(pk=item.id).bids.all()
+    max_not_start = bids.filter(is_start=False).order_by('-bid_value').first()
+    if max_not_start:
+        return max_not_start.bid_by.pk == user.pk
 
 def is_watchlisted(user, id):
     watchlist = Watchlist.objects.filter(author=user)
@@ -72,7 +79,6 @@ def watchlist_items(request):
 
 def save_listing(listing_form, request):
     saved_form = listing_form.save(commit=False)
-    
     saved_form.listed_by = User.objects.get(username=request.user)
     saved_form.save()
     return saved_form.id
@@ -91,6 +97,7 @@ def list_new_item(request):
             bid_form = bid_form.save(commit=False)
             bid_form.bid_by = User.objects.get(username=request.user)
             bid_form.item = cur_listing
+            bid_form.is_start = True
             bid_form.save()
             return HttpResponseRedirect('/thank-you')
         else:
@@ -110,20 +117,22 @@ def thank_you(request):
 @login_required
 def add_bid(request, item_id):
     item = Listing.objects.get(pk=item_id)
-    act_bid = item.max_bid()
-    cur_listing = Listing.objects.get(pk=item_id) 
+    act_bid = item.max_bid_value()
+    start_is_max = item.start_is_max()
+    print(act_bid, start_is_max)
     if request.method == 'POST':
         bid_form = BidFormSmall(request.POST)
         if  bid_form.is_valid():
             bid_form = bid_form.save(commit=False)
             bid_form.bid_by = User.objects.get(username=request.user)
-            bid_form.item = cur_listing
-            if bid_form.bid_value > act_bid:
+            bid_form.item = item
+            bid_form.is_start = False
+            if (bid_form.bid_value > act_bid) or (start_is_max and bid_form.bid_value >= act_bid):
                 bid_form.save()
                 return HttpResponseRedirect('/thank-you')
             else:
                 bid_form = BidFormSmall()
-                message = 'Your bid should be higher than current, try again!'
+                message = 'Your bid should be higher than current or equal to start bid, try again!'
                 return render(request, "auctions/item.html", {"message": message, 
                                                                 "item":item,
                                                                 'form': bid_form})
