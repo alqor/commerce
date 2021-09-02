@@ -1,7 +1,7 @@
 .new-item-title {
     text-align: center;
-    margin-left: 10rem;
-    margin-right: 10rem;
+    margin-top: 0;
+    background-color: rgb(241, 231, 224,0);
 }
 
 .new-item-form {
@@ -12,6 +12,16 @@
     box-shadow: 0px 0px 7px #81483E;
     padding: 1rem;
     min-width: 23rem;
+    margin-top: 2rem;
+}
+
+.new-item-form a {
+    color: #515B48;
+    font-weight: bold;
+}
+.new-item-form a:active,
+.new-item-form a:hover {
+    color: #81483E;
 }
 
 .item-label {
@@ -47,17 +57,18 @@
     box-shadow: 0px 0px 7px #81483E;
     outline: none;
     background-color: #E8D1CB;
+    color: #515B48;
 }
 
 .form-button {
     text-align: center;
 }
 
-.form-button button {
+.form-button button, .form-button input[type=submit] {
     border: 2px solid rgba(129, 72, 62, 0.8);
     background-color: rgba(129, 72, 62, 0.2);
     color: #81483E;
-    padding: 1rem;
+    padding: 0.5rem;
     padding-left: 2rem;
     padding-right: 2rem;
     font-weight: bold;
@@ -66,15 +77,25 @@
 }   
 
 .form-button button:hover,
-.form-button button:active  {
+.form-button button:active,
+.form-button input[type=submit]:active,
+.form-button input[type=submit]:hover  {
     border: 2px solid rgba(129, 72, 62, 0.8);
     transform: scale(1.1); 
     border-radius: 6px;
     background-color: rgba(129, 72, 62, 0.8);
     box-shadow: 0px 0px 7px #81483E;
     color: #E8D1CB;
-    padding: 1rem;
+    padding: 0.5rem;
     padding-left: 2rem;
     padding-right: 2rem;
     font-weight: bold;
+}
+
+.form-error {
+    background-color: #515B48;
+    color: #E8D1CB;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin: 0.5rem;
 }

@@ -50,3 +50,68 @@
     font-weight: bold;
 }
 
+.real-bid {
+    background-color: rgba(129, 72, 62, 0.8);
+    border-radius: 6px;
+    color: #E8D1CB;
+    padding: 1rem;
+    text-align: left;
+
+} 
+
+.real-bid p {
+    margin-bottom: 0;
+} 
+
+.real-bid button {
+    border: 2px solid rgba(129, 72, 62, 0.8);
+    background-color: #E8D1CB;
+    color: #81483E;
+    padding: 0.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-weight: bold;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-left: 1rem;
+}   
+
+.real-bid  button:hover,
+.real-bid  button:active {
+    border: 2px solid rgba(129, 72, 62, 0.8);
+    transform: scale(1.1); 
+    border-radius: 6px;
+    background-color: #E8D1CB;
+    box-shadow: 0px 0px 7px #E8D1CB;
+    color: #81483E;
+    padding: 0.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-weight: bold;
+}
+
+.bid-form {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.wrong-bid {
+    font-weight: bold;
+}
+
+.bid-field {
+    border-radius: 4px;
+    border: 1px solid #515B48;
+    height: 2rem;
+    background-color:#E8D1CB;
+    color: #515B48;
+}
+
+.bid-field:focus {
+    border: 1px solid #81483E;
+    box-shadow: 0px 0px 7px #E8D1CB;
+    outline: none;
+    background-color: #E8D1CB;
+    color: #515B48;
+}

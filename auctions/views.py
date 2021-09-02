@@ -3,7 +3,7 @@ from django.db.models import Max
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView
@@ -19,21 +19,26 @@ def index(request):
     active_items = Listing.objects.filter(status='Active') 
     return render(request, "auctions/index.html", {'items':active_items})
 
+
 class Categories(ListView):
     template_name = 'auctions/categories.html'
     model = ItemCategory
     context_object_name = 'cats'
 
+
 def items_by_cat(request, cat_id):
     active_items = Listing.objects.filter(status='Active', category=cat_id) 
     return render(request, "auctions/index.html", {'items':active_items})
 
+
 def item_page(request, id):
     item = Listing.objects.get(pk=id)
     is_wl=None
+    bid_form = BidFormSmall()
     if request.user.is_authenticated:
         is_wl = is_watchlisted(request.user, id)
-    return render(request, "auctions/item.html", {"item": item, "wl":is_wl})
+    return render(request, "auctions/item.html", {"item": item, "wl":is_wl, 'form': bid_form})
+
 
 def is_watchlisted(user, id):
     watchlist = Watchlist.objects.filter(author=user)
@@ -43,11 +48,9 @@ def is_watchlisted(user, id):
 @login_required
 def watchlist_manipulator(request, item_id):
     user = request.user
-    # list_item = Listing.objects.get(pk=item_id)
     if is_watchlisted(user, item_id):
         watchlist = Watchlist.objects.get(author=user)
         watchlist.item.remove(item_id)
-        # return HttpResponseRedirect(f'/{item_id}')
     else:
         if Watchlist.objects.filter(author=user):
            watchlist = Watchlist.objects.get(author=user)
@@ -63,10 +66,67 @@ def watchlist_items(request):
     wl_items = Watchlist.objects.filter(author=request.user)
     if wl_items:
         active_items = wl_items[0].item.all()
-        return render(request, "auctions/index.html", {'items':active_items})
-    else:
-        return render(request, "auctions/index.html", {'items':active_items})
 
+    return render(request, "auctions/index.html", {'items':active_items})
+
+
+def save_listing(listing_form, request):
+    saved_form = listing_form.save(commit=False)
+    
+    saved_form.listed_by = User.objects.get(username=request.user)
+    saved_form.save()
+    return saved_form.id
+
+
+@login_required
+def list_new_item(request):   
+    if request.method == 'POST':
+        list_item_form = ListingForm(request.POST)
+        bid_form = BidForm(request.POST)
+        
+        if list_item_form.is_valid() and bid_form.is_valid():
+            item_id = save_listing(list_item_form, request)
+            cur_listing = Listing.objects.get(pk=item_id) 
+
+            bid_form = bid_form.save(commit=False)
+            bid_form.bid_by = User.objects.get(username=request.user)
+            bid_form.item = cur_listing
+            bid_form.save()
+            return HttpResponseRedirect('/thank-you')
+        else:
+            raise ValidationError('bid val')
+            print('something goes wrong')
+    else:
+        list_item_form = ListingForm()
+        bid_form = BidForm()
+    return render(request, 'auctions/add_listing.html', {'list_item_form':list_item_form,
+                                                         'bid_form':bid_form,
+                                                        })
+
+@login_required
+def thank_you(request):
+    return render(request, 'auctions/thank_you.html')
+
+@login_required
+def add_bid(request, item_id):
+    item = Listing.objects.get(pk=item_id)
+    act_bid = item.max_bid()
+    cur_listing = Listing.objects.get(pk=item_id) 
+    if request.method == 'POST':
+        bid_form = BidFormSmall(request.POST)
+        if  bid_form.is_valid():
+            bid_form = bid_form.save(commit=False)
+            bid_form.bid_by = User.objects.get(username=request.user)
+            bid_form.item = cur_listing
+            if bid_form.bid_value > act_bid:
+                bid_form.save()
+                return HttpResponseRedirect('/thank-you')
+            else:
+                bid_form = BidFormSmall()
+                message = 'Your bid should be higher than current, try again!'
+                return render(request, "auctions/item.html", {"message": message, 
+                                                                "item":item,
+                                                                'form': bid_form})
 
 def login_view(request):
     if request.method == "POST":
@@ -119,37 +179,3 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-
-def save_listing(listing_form, request):
-    saved_form = listing_form.save(commit=False)
-    
-    saved_form.listed_by = User.objects.get(username=request.user)
-    saved_form.save()
-    return saved_form.id
-
-
-@login_required
-def list_new_item(request):   
-    if request.method == 'POST':
-        list_item_form = ListingForm(request.POST)
-        bid_form = BidForm(request.POST)
-        if list_item_form.is_valid() and bid_form.is_valid():
-            id = save_listing(list_item_form, request)
-            bid_form.save(commit=False)
-            bid_form.bid_by = User.objects.get(username=request.user)
-            bid_form.item = id
-            return HttpResponseRedirect('/thank-you')
-        else:
-            raise ValidationError('bid val')
-            print('something goes wrong')
-    else:
-        list_item_form = ListingForm()
-        bid_form = BidForm()
-        list_item_form.listed_by = User.objects.get(username=request.user)
-    return render(request, 'auctions/add_listing.html', {'list_item_form':list_item_form,
-                                                         'bid_form':bid_form,
-                                                        })
-
-@login_required
-def thank_you(request):
-    return render(request, 'auctions/thank_you.html')

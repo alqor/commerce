@@ -1,9 +1,0 @@
- {% if user.is_authenticated %}
-
-{% if add_item %}
-<a href="{% url 'add-watch' item_id=item.pk %}">Add to watchlist</a>
-{% else %}
-<a href="{% url 'add-watch' item_id=item.pk %}">Remove from watchlist</a>
-
-{% endif %}
-{% endif %}

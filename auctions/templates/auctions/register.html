@@ -2,29 +2,39 @@
 
 {% block body %}
 
-    <h2>Register</h2>
-
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
-
-    <form action="{% url 'register' %}" method="post">
+ <div class="container">
+      <div class="row">
+                    <div class="col-3"></div>
+        <div class="col-6">
+                <div class="new-item-form">
+                <div class="item-title new-item-title item-card">Register</div>
+        <form action="{% url 'register' %}" method="POST">
         {% csrf_token %}
         <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+            <input class="item-field form-control" autofocus type="text" name="username" placeholder="Username">
         </div>
         <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
+            <input class=" item-field form-control" type="email" name="email" placeholder="Email Address">
         </div>
         <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
+            <input class="item-field form-control" type="password" name="password" placeholder="Password">
         </div>
         <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+            <input class="item-field form-control" type="password" name="confirmation" placeholder="Confirm Password">
         </div>
-        <input class="btn btn-primary" type="submit" value="Register">
-    </form>
-
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+                    {% if message %}
+                        <div class="form-error">Error: {{ message }}</div>
+                    {% endif %}
+        <div class="col form-button">
+        <input type="submit" value="Register">
+        </div>
+        </form>
+        <hr>
+        <span>Already have an account? <span><a href="{% url 'login' %}">Log In here.</a>
+                </div>              
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
+

@@ -20,9 +20,9 @@ urlpatterns = [
 
     path('watchlist', views.watchlist_items, name='watchlist'),
 
-    path('watchlist/<int:item_id>', views.watchlist_manipulator, name='add-remove-watch')
+    path('watchlist/<int:item_id>', views.watchlist_manipulator, name='add-remove-watch'),
 
-    # path('add-bid', login_required(views.AddBid.as_view()), name='add-bid'),
+    path('add-bid/<int:item_id>', views.add_bid, name='add-bid'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

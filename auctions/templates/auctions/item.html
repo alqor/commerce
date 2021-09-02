@@ -35,6 +35,10 @@
                 <div><small class="text-muted">Created by: {{item.listed_by}} on {{item.list_date}}</small></div>
                 <hr>
                 <div class="item-bid">Current bid: <span>{{item.max_bid}} $</span></div>
+                <hr>
+
+                {% include "auctions/includes/add_bid.html" with bid_form=form item_id=item.pk%}
+                
         </div>
   </div>
   </div>      

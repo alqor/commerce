@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 FORM_ATTRS = {'class':"item-field form-control"}
 
+
 class ListingForm(forms.ModelForm):
     class Meta:
         model = Listing
@@ -25,4 +26,12 @@ class BidForm(forms.ModelForm):
             'bid_value': _('Start Bid'),
         }
         widgets = {
-            'bid_value': forms.NumberInput(attrs={'min': 1, 'class':"item-field form-control"})}
+            'bid_value': forms.NumberInput(attrs={'min':1, 'class':"item-field form-control"})}
+
+
+class BidFormSmall(forms.ModelForm):
+    class Meta:
+        model = Bid
+        fields = ["bid_value", ]
+        widgets = {
+            'bid_value': forms.NumberInput(attrs={'min':1, 'class':"bid-field form-control"})}

@@ -40,7 +40,7 @@ class Listing(models.Model):
         """
         to use in html templates
         """
-        return reverse('item-card', args=[self.id])
+        return reverse('item-page', args=[self.id])
     
     def max_bid(self):
         bids = Listing.objects.all().get(pk=self.id).bids.all()
