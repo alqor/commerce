@@ -15,9 +15,10 @@ from django.views import View
 from .models import *
 from .forms import *
 
+
 def index(request):
-    active_items = Listing.objects.filter(status='Active') 
-    return render(request, "auctions/index.html", {'items':active_items})
+    active_items = Listing.objects.filter(status='Active')
+    return render(request, "auctions/index.html", {'items': active_items})
 
 
 class Categories(ListView):
@@ -27,19 +28,35 @@ class Categories(ListView):
 
 
 def items_by_cat(request, cat_id):
-    active_items = Listing.objects.filter(status='Active', category=cat_id) 
-    return render(request, "auctions/index.html", {'items':active_items})
+    active_items = Listing.objects.filter(status='Active', category=cat_id)
+    return render(request, "auctions/index.html", {'items': active_items})
 
 
 def item_page(request, id):
     item = Listing.objects.get(pk=id)
-    is_wl=None
+    is_wl = None
     bid_form = BidFormSmall()
     if request.user.is_authenticated:
         is_wl = is_watchlisted(request.user, id)
     max_by_user = max_is_by_user(item, request.user)
-    print(max_by_user)
-    return render(request, "auctions/item.html", {"item": item, "wl":is_wl, 'max_by_user': max_by_user, 'form': bid_form})
+    owner = is_owner(item, request.user)
+    winner = is_winner(item, request.user)
+    print(winner)
+    return render(request, "auctions/item.html", {"item": item,
+                                                  "wl": is_wl,
+                                                  'max_by_user': max_by_user,
+                                                  'form': bid_form,
+                                                  'owner': owner,
+                                                  'winner': winner})
+
+
+def is_owner(item, user):
+    return user.pk == item.listed_by.pk
+
+def is_winner(item, user):
+    if item.win_by:
+        return user.pk == item.win_by.pk
+
 
 def max_is_by_user(item, user):
     bids = Listing.objects.all().get(pk=item.id).bids.all()
@@ -47,10 +64,20 @@ def max_is_by_user(item, user):
     if max_not_start:
         return max_not_start.bid_by.pk == user.pk
 
+
 def is_watchlisted(user, id):
     watchlist = Watchlist.objects.filter(author=user)
     if watchlist and watchlist.first().item.filter(pk=id):
-        return True 
+        return True
+
+def close_listing(request, item_id):
+    item = Listing.objects.get(pk=item_id)
+    winner = item.winner()
+    item.status = 'Closed'
+    item.win_by = winner
+    item.save()
+    return HttpResponseRedirect(reverse('item-page', kwargs={'id': item_id}))
+
 
 @login_required
 def watchlist_manipulator(request, item_id):
@@ -60,13 +87,14 @@ def watchlist_manipulator(request, item_id):
         watchlist.item.remove(item_id)
     else:
         if Watchlist.objects.filter(author=user):
-           watchlist = Watchlist.objects.get(author=user)
-           watchlist.item.add(item_id)
+            watchlist = Watchlist.objects.get(author=user)
+            watchlist.item.add(item_id)
         else:
-           watchlist = Watchlist(author=user)
-           watchlist.save()
-           watchlist.item.add(item_id)
+            watchlist = Watchlist(author=user)
+            watchlist.save()
+            watchlist.item.add(item_id)
     return HttpResponseRedirect(f'/{item_id}')
+
 
 @login_required
 def watchlist_items(request):
@@ -74,7 +102,7 @@ def watchlist_items(request):
     if wl_items:
         active_items = wl_items[0].item.all()
 
-    return render(request, "auctions/index.html", {'items':active_items})
+    return render(request, "auctions/index.html", {'items': active_items})
 
 
 def save_listing(listing_form, request):
@@ -85,34 +113,37 @@ def save_listing(listing_form, request):
 
 
 @login_required
-def list_new_item(request):   
+def list_new_item(request):
     if request.method == 'POST':
         list_item_form = ListingForm(request.POST)
         bid_form = BidForm(request.POST)
-        
+
         if list_item_form.is_valid() and bid_form.is_valid():
             item_id = save_listing(list_item_form, request)
-            cur_listing = Listing.objects.get(pk=item_id) 
+            cur_listing = Listing.objects.get(pk=item_id)
 
             bid_form = bid_form.save(commit=False)
             bid_form.bid_by = User.objects.get(username=request.user)
             bid_form.item = cur_listing
             bid_form.is_start = True
             bid_form.save()
-            return HttpResponseRedirect('/thank-you')
+            # return HttpResponseRedirect('/thank-you')
+            return HttpResponseRedirect(reverse('item-page', kwargs={'id': item_id}))
         else:
             raise ValidationError('bid val')
             print('something goes wrong')
     else:
         list_item_form = ListingForm()
         bid_form = BidForm()
-    return render(request, 'auctions/add_listing.html', {'list_item_form':list_item_form,
-                                                         'bid_form':bid_form,
-                                                        })
+    return render(request, 'auctions/add_listing.html', {'list_item_form': list_item_form,
+                                                         'bid_form': bid_form,
+                                                         })
+
 
 @login_required
 def thank_you(request):
     return render(request, 'auctions/thank_you.html')
+
 
 @login_required
 def add_bid(request, item_id):
@@ -122,20 +153,21 @@ def add_bid(request, item_id):
     print(act_bid, start_is_max)
     if request.method == 'POST':
         bid_form = BidFormSmall(request.POST)
-        if  bid_form.is_valid():
+        if bid_form.is_valid():
             bid_form = bid_form.save(commit=False)
             bid_form.bid_by = User.objects.get(username=request.user)
             bid_form.item = item
             bid_form.is_start = False
             if (bid_form.bid_value > act_bid) or (start_is_max and bid_form.bid_value >= act_bid):
                 bid_form.save()
-                return HttpResponseRedirect('/thank-you')
+                return HttpResponseRedirect(reverse('item-page', kwargs={'id': item_id}))
             else:
                 bid_form = BidFormSmall()
                 message = 'Your bid should be higher than current or equal to start bid, try again!'
-                return render(request, "auctions/item.html", {"message": message, 
-                                                                "item":item,
-                                                                'form': bid_form})
+                return render(request, "auctions/item.html", {"message": message,
+                                                              "item": item,
+                                                              'form': bid_form})
+
 
 def login_view(request):
     if request.method == "POST":
@@ -187,4 +219,3 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
-

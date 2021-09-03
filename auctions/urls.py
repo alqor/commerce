@@ -23,6 +23,8 @@ urlpatterns = [
     path('watchlist/<int:item_id>', views.watchlist_manipulator, name='add-remove-watch'),
 
     path('add-bid/<int:item_id>', views.add_bid, name='add-bid'),
+
+    path('close_listing/<int:item_id>', views.close_listing, name='close-listing')
 ]
 
 urlpatterns += staticfiles_urlpatterns()
