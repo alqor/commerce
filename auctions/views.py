@@ -171,7 +171,7 @@ def add_bid(request, item_id):
                 message = 'Your bid should be higher than current or equal to start bid, try again!'
                 return render(request, "auctions/item.html", {"message": message,
                                                               "item": item,
-                                                              'form': bid_form})
+                                                              'bid_form': bid_form})
 
 @login_required
 def add_comment(request, item_id):

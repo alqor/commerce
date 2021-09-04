@@ -23,10 +23,9 @@
 <hr>
 
 {% if comments %}
-
+{% for comment in comments %}
 <div class="row">
     <div class='comment col-3'>
-        {% for comment in comments %}
         {{comment.author}} <small class="text-muted">commented on {{comment.publish_date}}</small>:
     </div>
 </div>
