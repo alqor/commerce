@@ -5,12 +5,14 @@ from django.urls import reverse
 from django.core.validators import MinValueValidator
 from django.db.models import Max
 
-
 class User(AbstractUser):
     pass
 
 
 class ItemCategory(models.Model):
+    class Meta:
+        verbose_name_plural = "categories"
+
     cat_name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -70,7 +72,6 @@ class Listing(models.Model):
 
     def winner(self):
         bids = Listing.objects.get(pk=self.id).bids.all()
-        print(bids)
         if len(bids)>1:
             winner = bids.filter(is_start=False).order_by('-bid_value').first().bid_by
             return winner
@@ -91,9 +92,15 @@ class Bid(models.Model):
 
 class Comment(models.Model):
     comment_text = models.TextField(max_length=500)
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               null=True, related_name='comments')
-    publish_date = models.DateField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    item = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    publish_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-publish_date']
+
+    def __str__(self):
+        return f'{self.author} commented {self.item}'
 
 
 class Watchlist(models.Model):

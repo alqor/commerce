@@ -1,5 +1,5 @@
 from django import forms
-from .models import ItemCategory, Listing, Bid
+from .models import ItemCategory, Listing, Bid, Comment
 from django.utils.translation import gettext_lazy as _
 
 FORM_ATTRS = {'class':"item-field form-control"}
@@ -35,3 +35,12 @@ class BidFormSmall(forms.ModelForm):
         fields = ["bid_value", ]
         widgets = {
             'bid_value': forms.NumberInput(attrs={'min':1, 'class':"bid-field form-control"})}
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment_text']
+        widgets = {
+            'comment_text': forms.Textarea(attrs={'rows':"4", 'class':"form-control"}),
+        }

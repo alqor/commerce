@@ -38,31 +38,38 @@
 
                 <div>{{item.description}}</div>
                 <div><small class="text-muted">Created by: {{item.listed_by}} on {{item.list_date}}</small></div>
+               
                 <hr>
                 {% if item.status == "Active" %}
 
                 <div class="item-bid">Current bid: <span>{{item.max_bid_value}} $</span></div>
-                <div><small class="text-muted">{{item.bids_quantity}} bid(s) so far. 
+                <div><small class="text-muted">{{item.bids_quantity}} bid(s) so far. </small>
                 {% if max_by_user %}
-                Your bid is current bid.
+                <span class="bid-promt">Your bid is current bid.</span>
                 {% endif %}
-                </small></div>
+                
                 {% if item.start_is_max %}
-                Current bid is a start bid
+                <span class="bid-promt">Current bid is a start bid</span>
                 {% endif %}
+                </div>
+
                 <hr>
                
                 {% if not owner %}
-                {% include "auctions/includes/add_bid.html" with bid_form=form item_id=item.pk%}
+                {% include "auctions/includes/add_bid.html" with bid_form=bid_form item_id=item.pk%}
                 {% endif %}
                 {% elif winner %}
                 <div class="item-bid"><span>Congratulations! You won the lot!</span></div>
                 {% else %}
                 <div class="item-bid"><span>The listing is closed.</span></div>
                 {% endif %}
-
         </div>
-  </div>
-  </div>      
+        </div>
+        </div>   
+                <hr>
+
+                {% include "auctions/includes/comment.html" with comm_form=comm_form item_id=item.pk comments=comments%}
+      
+     
 </div>
 {% endblock %}

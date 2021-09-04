@@ -24,7 +24,9 @@ urlpatterns = [
 
     path('add-bid/<int:item_id>', views.add_bid, name='add-bid'),
 
-    path('close_listing/<int:item_id>', views.close_listing, name='close-listing')
+    path('close_listing/<int:item_id>', views.close_listing, name='close-listing'),
+
+    path('add-comment/<int:item_id>', views.add_comment, name='add-comment')
 ]
 
 urlpatterns += staticfiles_urlpatterns()

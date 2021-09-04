@@ -34,20 +34,25 @@ def items_by_cat(request, cat_id):
 
 def item_page(request, id):
     item = Listing.objects.get(pk=id)
+    comments = Comment.objects.filter(item=id) #.order_by('-publish_date')
     is_wl = None
     bid_form = BidFormSmall()
+    comm_form = CommentForm()
+
     if request.user.is_authenticated:
         is_wl = is_watchlisted(request.user, id)
     max_by_user = max_is_by_user(item, request.user)
     owner = is_owner(item, request.user)
     winner = is_winner(item, request.user)
-    print(winner)
+
     return render(request, "auctions/item.html", {"item": item,
                                                   "wl": is_wl,
                                                   'max_by_user': max_by_user,
-                                                  'form': bid_form,
+                                                  'bid_form': bid_form,
+                                                  'comm_form': comm_form,
                                                   'owner': owner,
-                                                  'winner': winner})
+                                                  'winner': winner,
+                                                  'comments': comments})
 
 
 def is_owner(item, user):
@@ -150,7 +155,7 @@ def add_bid(request, item_id):
     item = Listing.objects.get(pk=item_id)
     act_bid = item.max_bid_value()
     start_is_max = item.start_is_max()
-    print(act_bid, start_is_max)
+
     if request.method == 'POST':
         bid_form = BidFormSmall(request.POST)
         if bid_form.is_valid():
@@ -168,6 +173,17 @@ def add_bid(request, item_id):
                                                               "item": item,
                                                               'form': bid_form})
 
+@login_required
+def add_comment(request, item_id):
+    item = Listing.objects.get(pk=item_id)
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form = comment_form.save(commit=False)
+            comment_form.author = User.objects.get(username=request.user)
+            comment_form.item = item
+            comment_form.save()
+            return HttpResponseRedirect(reverse('item-page', kwargs={'id': item_id}))
 
 def login_view(request):
     if request.method == "POST":

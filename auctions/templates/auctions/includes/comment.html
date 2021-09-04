@@ -1,0 +1,44 @@
+<div class="row">
+    <div class='comment col'>
+    <h4>Add a comment:</h4>
+        {% if user.is_authenticated %}
+        <form class="" action="{% url "add-comment" item_id%}" method="POST">
+        <div class="form-group">
+                        {% csrf_token %}
+                        {{ comm_form.comment_text }}
+
+                        <button type="submit" class="btn">Submit</button>   
+
+        </div>
+        </form>      
+        {% endif %}
+    </div>
+</div>
+
+<hr>
+        {% if comments %}
+        {% for comment in comments %}
+
+        <div class="row">
+            <div class='comment col-3'>
+        {{comment.author}} <small class="text-muted">commented on {{comment.publish_date}}</small>:
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3"></div>    
+            <div class="comment col-9">
+        {{comment.comment_text}}
+            </div>
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+        <div class="row">
+            <div class='comment col-3'>
+            <h5>No comments yet.</h5>
+            </div>
+        </div>
+        {% endif %}
+
+   
