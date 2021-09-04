@@ -1,5 +1,6 @@
 .item-card {
     margin-top: 1.5rem;
+    margin-bottom: 3rem;
     background-color:rgb(241, 231, 224,0.7);
     border-radius: 6px;
 }
@@ -98,6 +99,16 @@
     padding-right: 1.5rem;
     font-weight: bold;
 }
+
+.bid-a {
+    color: #515B48;
+    font-weight: bold;
+}
+.bid-a:active,
+.bid-a:hover {
+    color: #81483E;
+}
+
 
 .bid-form {
     display: flex;

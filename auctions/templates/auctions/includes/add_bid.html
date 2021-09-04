@@ -1,5 +1,5 @@
- {% if user.is_authenticated %}
  <div class="real-bid col">
+ {% if user.is_authenticated %} 
            <form class="form-inline" action="{% url 'add-bid' item_id %}" method="POST">
            <div class="col-4">
                     {%if message %}
@@ -18,7 +18,7 @@
            </div>
            </form>      
 {% else %}
-         To make a bid, please <a href="{% url "login"%}"> Log in </a> 
-         or <a href="{% url "register"%}"> Register </a> 
-</div>
+         To make a bid, please <a class="bid-a" href="{% url "login"%}"> Log in </a> 
+         or <a class="bid-a" href="{% url "register"%}"> Register. </a> 
 {% endif %}
+</div>

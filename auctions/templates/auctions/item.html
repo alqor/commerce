@@ -30,6 +30,7 @@
                         </a>
                 </div>
                 {% endif %}
+
                 {% if owner and item.status == "Active" %}
                 <div class="item-close">
                 <a href="{% url 'close-listing' item_id=item.id%}"><span>Close Listing</span></a>
@@ -43,16 +44,17 @@
                 {% if item.status == "Active" %}
 
                 <div class="item-bid">Current bid: <span>{{item.max_bid_value}} $</span></div>
+
                 <div><small class="text-muted">{{item.bids_quantity}} bid(s) so far. </small>
                 {% if max_by_user %}
                 <span class="bid-promt">Your bid is current bid.</span>
                 {% endif %}
-                
+                </div>
+
                 {% if item.start_is_max %}
                 <span class="bid-promt">Current bid is a start bid</span>
                 {% endif %}
-                </div>
-
+                
                 <hr>
                
                 {% if not owner %}
@@ -64,12 +66,11 @@
                 <div class="item-bid"><span>The listing is closed.</span></div>
                 {% endif %}
         </div>
-        </div>
-        </div>   
+  </div>
+
                 <hr>
 
-                {% include "auctions/includes/comment.html" with comm_form=comm_form item_id=item.pk comments=comments%}
+{% include "auctions/includes/comment.html" with comm_form=comm_form item_id=item.pk comments=comments%}
       
-     
 </div>
 {% endblock %}
